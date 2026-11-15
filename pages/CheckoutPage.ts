@@ -11,6 +11,9 @@ export class CheckoutPage {
     readonly errorMessage: Locator;
     readonly summaryItems: Locator;
     readonly completeHeader: Locator;
+    readonly itemTotal: Locator;
+    readonly tax: Locator;
+    readonly total: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -23,6 +26,9 @@ export class CheckoutPage {
         this.errorMessage = page.locator('[data-test="error"]');
         this.summaryItems = page.locator('.cart_item');
         this.completeHeader = page.locator('.complete-header');
+        this.itemTotal = page.locator('.summary_subtotal_label');
+        this.tax = page.locator('.summary_tax_label');
+        this.total = page.locator('.summary_total_label');
     }
 
     async fillCustomerInformation(firstName: string, lastName: string, postalCode: string) {

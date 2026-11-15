@@ -5,6 +5,9 @@ import {InventoryPage} from '../pages/InventoryPage';
 import {CartPage} from '../pages/CartPage';
 import {users} from '../test-data/users';
 
+
+let cartProductPrice: string | null;
+
 test.describe('Checkout Module', () => {
     let inventoryPage: InventoryPage;
     let cartPage: CartPage;
@@ -21,6 +24,7 @@ test.describe('Checkout Module', () => {
 
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await cartPage.navigate();
+        cartProductPrice = await cartPage.productPrices.first().textContent();
         await cartPage.checkout();
     });
 
@@ -61,6 +65,41 @@ test.describe('Checkout Module', () => {
         await checkoutPage.finishCheckout();
         await expect(page).toHaveURL(/checkout-complete.html/);
         await expect(checkoutPage.completeHeader).toHaveText('Thank you for your order!');
+    });
+
+    test('TC_CHECKOUT_006 - Cancel checkout and return to cart', async ({page}) => {
+        await checkoutPage.cancelCheckout();
+        await expect(page).toHaveURL(/cart.html/);
+        await expect(cartPage.productNames).toContainText('Sauce Labs Backpack');
+
+    });
+
+    test('TC_CHECKOUT_007 - Verify order total calculation', async ({page}) => {
+        await checkoutPage.fillCustomerInformation('leo', 'dicap', '12345');
+        await checkoutPage.continueCheckout();
+        await expect(page).toHaveURL(/checkout-step-two.html/);
+
+        const itemTotalText = await checkoutPage.itemTotal.textContent();
+        const taxText = await checkoutPage.tax.textContent();
+        const totalText = await checkoutPage.total.textContent();
+
+        const itemTotal = Number(itemTotalText?.replace('Item total: $', ''));
+        const tax = Number(taxText?.replace('Tax: $', ''));
+        const total = Number(totalText?.replace('Total: $', ''));
+
+        expect(total).toBeCloseTo(itemTotal + tax, 2);
+
+    });
+
+    test('TC_CHECKOUT_008 - Verify product price in order summary', async ({page}) => {
+        
+
+        await checkoutPage.fillCustomerInformation('leo', 'dicap', '12345');
+        await checkoutPage.continueCheckout();
+        await expect(page).toHaveURL(/checkout-step-two.html/);
+
+        const summaryPrice = await checkoutPage.summaryItems.locator('.inventory_item_price').textContent();
+        expect(summaryPrice).toBe(cartProductPrice);
     });
 
 });
