@@ -2,15 +2,15 @@ import {test, expect} from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { users } from '../test-data/users';
 
-test.describe('Login Modules', () => {
-    let loginPage : LoginPage;
+test.describe('Login Module', () => {
 
     test.beforeEach(async ({page}) => {
-        loginPage = new LoginPage(page);
+        const loginPage = new LoginPage(page);
         await loginPage.navigate();
     });
 
     test('TC_LOGIN_001 - login with valid credentials', async ({page}) => {
+        const loginPage = new LoginPage(page);
         await loginPage.login(
             users.standardUser.username,
             users.standardUser.password,
@@ -20,7 +20,8 @@ test.describe('Login Modules', () => {
 
     });
 
-    test('TC_LOGIN_002 - login with invaid password', async ({page}) => {
+    test('TC_LOGIN_002 - login with invalid password', async ({page}) => {
+        const loginPage = new LoginPage(page);
         await loginPage.login(
             users.invalidUser.username,
             users.invalidUser.password,
@@ -31,18 +32,30 @@ test.describe('Login Modules', () => {
     });
 
     test('TC_LOGIN_003 - login with empty username', async ({page}) => {
+        const loginPage = new LoginPage(page);
         await loginPage.login('', users.standardUser.password);
         await expect(loginPage.errorMessage).toContainText('Epic sadface: Username is required');
     });
 
     test('TC_LOGIN_004 - login with empty password', async ({page}) => {
+        const loginPage = new LoginPage(page);
         await loginPage.login(users.standardUser.username, '');
         await expect(loginPage.errorMessage).toContainText('Epic sadface: Password is required');
     });
 
     test('TC_LOGIN_005 - login with locked out user', async ({page}) => {
+        const loginPage = new LoginPage(page);
         await loginPage.login(users.lockedOutUser.username, users.lockedOutUser.password);
         await expect(loginPage.errorMessage).toContainText('Epic sadface: Sorry, this user has been locked out.');
+    });
+
+    test('TC_LOGIN_006 - login with empty username and password', async ({page}) => {
+    const loginPage = new LoginPage(page);
+
+    await loginPage.login('', '');
+
+    await expect(loginPage.errorMessage)
+        .toContainText('Epic sadface: Username is required');
     });
 
 });
