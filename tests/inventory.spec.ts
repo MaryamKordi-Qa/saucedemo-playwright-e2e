@@ -1,31 +1,20 @@
-import {test, expect} from '@playwright/test';
-import { InventoryPage } from '../pages/InventoryPage';
-import { LoginPage } from '../pages/LoginPage';
-import { users } from '../test-data/users';
+import { test, expect } from '../fixtures/test-fixtures';
 import { CartPage } from '../pages/CartPage';
 
 test.describe('Inventory Modules', () => {
-    let inventoryPage : InventoryPage;
+    
 
-    test.beforeEach(async ({page}) => {
-        const loginPage = new LoginPage(page);
-
-        await loginPage.navigate();
-        await loginPage.login(users.standardUser.username, users.standardUser.password);
-
-        inventoryPage = new InventoryPage(page);
-    });
-
-    test('TC_INV_001 - Inventory page is displayed', async ({page}) => {
+    test('TC_INV_001 - Inventory page is displayed', async ({page, inventoryPage}) => {
         await expect(page).toHaveURL(/inventory.html/);
         await expect(page.getByText('Products')).toBeVisible();
-    });
-
-    test('TC_INV_002 - Six products are displayed', async ({page}) => {
         await expect(inventoryPage.inventoryItems).toHaveCount(6);
     });
 
-    test('TC_INV_003 - Sort products by name A to Z', async () => {
+    test('TC_INV_002 - Six products are displayed', async ({inventoryPage}) => {
+        await expect(inventoryPage.inventoryItems).toHaveCount(6);
+    });
+
+    test('TC_INV_003 - Sort products by name A to Z', async ({inventoryPage}) => {
         await inventoryPage.sortProducts('az');
 
         const names = await inventoryPage.productNames.allTextContents();
@@ -42,7 +31,7 @@ test.describe('Inventory Modules', () => {
         expect(names).toEqual(expectedNames);
     });
 
-    test('TC_INV_004 - Sort products by name Z to A', async () => {
+    test('TC_INV_004 - Sort products by name Z to A', async ({inventoryPage}) => {
         await inventoryPage.sortProducts('za');
 
         const names = await inventoryPage.productNames.allTextContents();
@@ -59,7 +48,7 @@ test.describe('Inventory Modules', () => {
         expect(names).toEqual(expectedNames);
     });
 
-    test('TC_INV_005 - Sort products by price low to high', async () => {
+    test('TC_INV_005 - Sort products by price low to high', async ({inventoryPage}) => {
         await inventoryPage.sortProducts('lohi');
 
         const prices = await inventoryPage.productPrices.allTextContents();
@@ -73,7 +62,7 @@ test.describe('Inventory Modules', () => {
         expect(numericPrices).toEqual(expectedPrices);
     });
 
-    test('TC_INV_006 - Sort products by price high to low', async () => {
+    test('TC_INV_006 - Sort products by price high to low', async ({inventoryPage}) => {
         await inventoryPage.sortProducts('hilo');
 
         const prices = await inventoryPage.productPrices.allTextContents();
@@ -86,19 +75,19 @@ test.describe('Inventory Modules', () => {
         expect(numericPrices).toEqual(expectedPrices);
     });
 
-    test('TC_INV_007 - Add product to cart', async () => {
+    test('TC_INV_007 - Add product to cart', async ({inventoryPage}) => {
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await expect(inventoryPage.cartBadge).toHaveText('1');
 
     });
 
-    test('TC_INV_008 - Remove product from cart', async () => {
+    test('TC_INV_008 - Remove product from cart', async ({inventoryPage}) => {
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.removeProductFromCart('Sauce Labs Backpack');
         await expect(inventoryPage.cartBadge).toHaveCount(0);
     });
 
-    test('TC_INV_009 - Add multiple products to cart', async () => {
+    test('TC_INV_009 - Add multiple products to cart', async ({inventoryPage}) => {
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.addProductToCart('Sauce Labs Bike Light');
         await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');
@@ -106,7 +95,7 @@ test.describe('Inventory Modules', () => {
         await expect(inventoryPage.cartBadge).toHaveText('3');
     });
 
-    test('TC_INV_010 - Verify multiple products in cart', async ({page}) => {
+    test('TC_INV_010 - Verify multiple products in cart', async ({page, inventoryPage}) => {
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.addProductToCart('Sauce Labs Bike Light');
         await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');
@@ -122,7 +111,7 @@ test.describe('Inventory Modules', () => {
         ]);
     });
 
-    test('TC_INV_011 - Remove one product from cart', async ({page}) => {
+    test('TC_INV_011 - Remove one product from cart', async ({page, inventoryPage}) => {
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.addProductToCart('Sauce Labs Bike Light');
         await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');
@@ -134,7 +123,10 @@ test.describe('Inventory Modules', () => {
         await cartPage.removeProduct('Sauce Labs Bike Light');
 
         await expect(cartPage.cartItems).toHaveCount(2);
-        await expect(cartPage.productNames.filter({hasText: 'Sauce Labs Bike Light',})).toHaveCount(0);
+        await expect(
+            cartPage.productNames.filter({hasText: 'Sauce Labs Bike Light'})
+        ).toHaveCount(0);
+        
         await expect(cartPage.productNames).toContainText([
             'Sauce Labs Backpack',
             'Sauce Labs Bolt T-Shirt',
@@ -142,7 +134,7 @@ test.describe('Inventory Modules', () => {
 
     });
 
-    test('TC_INV_012 - Remove all products from cart', async ({page}) => {
+    test('TC_INV_012 - Remove all products from cart', async ({page, inventoryPage}) => {
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.addProductToCart('Sauce Labs Bike Light');
         await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');
