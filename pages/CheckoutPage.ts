@@ -1,4 +1,5 @@
-import {Page, Locator} from '@playwright/test';
+
+import { Page, Locator } from '@playwright/test';
 
 export class CheckoutPage {
     readonly page: Page;
@@ -10,6 +11,8 @@ export class CheckoutPage {
     readonly finishButton: Locator;
     readonly errorMessage: Locator;
     readonly summaryItems: Locator;
+    readonly summaryProductNames: Locator;
+    readonly summaryProductPrices: Locator;
     readonly completeHeader: Locator;
     readonly itemTotal: Locator;
     readonly tax: Locator;
@@ -25,13 +28,19 @@ export class CheckoutPage {
         this.finishButton = page.locator('[data-test="finish"]');
         this.errorMessage = page.locator('[data-test="error"]');
         this.summaryItems = page.locator('.cart_item');
+        this.summaryProductNames = page.locator('.inventory_item_name');
+        this.summaryProductPrices = page.locator('.inventory_item_price');
         this.completeHeader = page.locator('.complete-header');
         this.itemTotal = page.locator('.summary_subtotal_label');
         this.tax = page.locator('.summary_tax_label');
         this.total = page.locator('.summary_total_label');
     }
 
-    async fillCustomerInformation(firstName: string, lastName: string, postalCode: string) {
+    async fillCustomerInformation(
+        firstName: string,
+        lastName: string,
+        postalCode: string
+    ) {
         await this.firstNameInput.fill(firstName);
         await this.lastNameInput.fill(lastName);
         await this.postalCodeInput.fill(postalCode);
@@ -41,7 +50,7 @@ export class CheckoutPage {
         await this.continueButton.click();
     }
 
-    async finishCheckout(){
+    async finishCheckout() {
         await this.finishButton.click();
     }
 

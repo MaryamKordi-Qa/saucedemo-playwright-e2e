@@ -1,4 +1,5 @@
-import {Page, Locator} from '@playwright/test'
+
+import { Page, Locator } from '@playwright/test';
 
 export class CartPage {
     readonly page: Page;
@@ -8,7 +9,7 @@ export class CartPage {
     readonly checkoutButton: Locator;
     readonly continueShoppingButton: Locator;
 
-    constructor(page: Page){
+    constructor(page: Page) {
         this.page = page;
         this.cartItems = page.locator('.cart_item');
         this.productNames = page.locator('.inventory_item_name');
@@ -17,20 +18,25 @@ export class CartPage {
         this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
     }
 
-    async navigate(){
+    async goToCart() {
         await this.page.locator('.shopping_cart_link').click();
     }
 
-    async checkout(){
+    async checkout() {
         await this.checkoutButton.click();
     }
 
-    async continueShopping(){
+    async continueShopping() {
         await this.continueShoppingButton.click();
     }
 
-    async removeProduct(productName: string){
-        const product = this.cartItems.filter({hasText: productName});
+    async removeProduct(productName: string) {
+        const product = this.cartItems.filter({
+            has: this.page.locator('.inventory_item_name', {
+                hasText: productName,
+            }),
+        });
+
         await product.getByRole('button', { name: 'Remove' }).click();
     }
 }
