@@ -1,10 +1,18 @@
 
 import { test, expect } from '../fixtures/test-fixtures';
 import { CartPage } from '../pages/CartPage';
+import { allure } from 'allure-playwright';
 
 test.describe('Cart Module', () => {
+    test.beforeEach(async () => {
+        await allure.epic('SauceDemo E2E Testing');
+        await allure.feature('Cart');
+});
 
     test('TC_CART_001 - Verify added product in cart', async ({ page, inventoryPage }) => {
+        await allure.story('Verify added product in cart');
+        await allure.severity('normal');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
 
         const cartPage = new CartPage(page);
@@ -15,6 +23,9 @@ test.describe('Cart Module', () => {
     });
 
     test('TC_CART_002 - Remove product from cart', async ({ page, inventoryPage }) => {
+        await allure.story('Remove product from cart');
+        await allure.severity('normal');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
 
         const cartPage = new CartPage(page);
@@ -27,6 +38,9 @@ test.describe('Cart Module', () => {
     });
 
     test('TC_CART_003 - Continue shopping from cart', async ({ page, inventoryPage }) => {
+        await allure.story('Continue shopping from cart');
+        await allure.severity('normal');
+
         const cartPage = new CartPage(page);
 
         await cartPage.goToCart();
@@ -37,6 +51,9 @@ test.describe('Cart Module', () => {
     });
 
     test('TC_CART_004 - Proceed to checkout', async ({ page, inventoryPage }) => {
+        await allure.story('Proceed to checkout');
+        await allure.severity('normal');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
 
         const cartPage = new CartPage(page);

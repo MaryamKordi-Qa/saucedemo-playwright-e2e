@@ -1,10 +1,18 @@
 
 import { test, expect } from '../fixtures/test-fixtures';
 import { CartPage } from '../pages/CartPage';
+import { allure } from 'allure-playwright';
 
 test.describe('Inventory Module', () => {
+    test.beforeEach(async () => {
+        await allure.epic('SauceDemo E2E Testing');
+        await allure.feature('Inventory');
+    });
 
     test('TC_INV_001 - Inventory page is displayed', async ({ page, inventoryPage}) => {
+        await allure.story('Inventory page is displayed');
+        await allure.severity('normal');
+
         await expect(page).toHaveURL(/inventory.html/);
         await expect(
             page.getByText('Products', { exact: true })
@@ -12,10 +20,16 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_002 - Six products are displayed', async ({ inventoryPage }) => {
+        await allure.story('Six products are displayed');
+        await allure.severity('normal');
+
         await expect(inventoryPage.inventoryItems).toHaveCount(6);
     });
 
     test('TC_INV_003 - Sort products by name A to Z', async ({ inventoryPage }) => {
+        await allure.story('Sort products by name A to Z');
+        await allure.severity('normal');
+
         await inventoryPage.sortProducts('az');
 
         const expectedNames = [
@@ -31,6 +45,9 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_004 - Sort products by name Z to A', async ({ inventoryPage }) => {
+        await allure.story('Sort products by name Z to A');
+        await allure.severity('normal');
+
         await inventoryPage.sortProducts('za');
 
         const expectedNames = [
@@ -46,6 +63,9 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_005 - Sort products by price low to high', async ({ inventoryPage }) => {
+        await allure.story('Sort products by price low to high');
+        await allure.severity('normal');
+
         await inventoryPage.sortProducts('lohi');
 
         const expectedPrices = [
@@ -61,6 +81,9 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_006 - Sort products by price high to low', async ({ inventoryPage }) => {
+        await allure.story('Sort products by price high to low');
+        await allure.severity('normal');
+
         await inventoryPage.sortProducts('hilo');
 
         const expectedPrices = [
@@ -76,12 +99,18 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_007 - Add product to cart', async ({ inventoryPage }) => {
+        await allure.story('Add product to cart');
+        await allure.severity('critical');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
 
         await expect(inventoryPage.cartBadge).toHaveText('1');
     });
 
     test('TC_INV_008 - Remove product from cart', async ({ inventoryPage }) => {
+        await allure.story('Remove product from cart');
+        await allure.severity('normal');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.removeProductFromCart('Sauce Labs Backpack');
 
@@ -89,6 +118,9 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_009 - Add multiple products to cart', async ({ inventoryPage }) => {
+        await allure.story('Add multiple products to cart');
+        await allure.severity('critical');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.addProductToCart('Sauce Labs Bike Light');
         await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');
@@ -97,6 +129,9 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_010 - Verify multiple products in cart', async ({ page, inventoryPage }) => {
+        await allure.story('Verify multiple products in cart');
+        await allure.severity('normal');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.addProductToCart('Sauce Labs Bike Light');
         await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');
@@ -113,6 +148,9 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_011 - Remove one product from cart', async ({ page, inventoryPage }) => {
+        await allure.story('Remove one product from cart');
+        await allure.severity('normal');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.addProductToCart('Sauce Labs Bike Light');
         await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');
@@ -137,6 +175,9 @@ test.describe('Inventory Module', () => {
     });
 
     test('TC_INV_012 - Remove all products from cart', async ({ page, inventoryPage }) => {
+        await allure.story('Remove all products from cart');
+        await allure.severity('normal');
+
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await inventoryPage.addProductToCart('Sauce Labs Bike Light');
         await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');

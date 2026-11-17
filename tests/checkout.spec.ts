@@ -2,11 +2,15 @@
 import { test, expect } from '../fixtures/test-fixtures';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { CartPage } from '../pages/CartPage';
+import { allure } from 'allure-playwright';
 
 test.describe('Checkout Module', () => {
     let cartProductPrice: string;
 
     test.beforeEach(async ({ page, inventoryPage }) => {
+        await allure.epic('SauceDemo E2E Testing');
+        await allure.feature('Checkout');
+
         const cartPage = new CartPage(page);
 
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
@@ -18,6 +22,9 @@ test.describe('Checkout Module', () => {
     });
 
     test('TC_CHECKOUT_001 - Verify checkout information page', async ({ page }) => {
+        await allure.story('Checkout information page is displayed');
+        await allure.severity('normal');
+
         const checkoutPage = new CheckoutPage(page);
 
         await expect(page).toHaveURL(/checkout-step-one.html/);
@@ -27,9 +34,12 @@ test.describe('Checkout Module', () => {
     });
 
     test('TC_CHECKOUT_002 - Validate empty first name', async ({ page }) => {
+        await allure.story('Empty first name validation');
+        await allure.severity('normal');
+
         const checkoutPage = new CheckoutPage(page);
 
-        await checkoutPage.fillCustomerInformation('', 'leo', '12345');
+        await checkoutPage.fillCustomerInformation('', 'joe', '12345');
         await checkoutPage.continueCheckout();
 
         await expect(checkoutPage.errorMessage).toBeVisible();
@@ -37,6 +47,9 @@ test.describe('Checkout Module', () => {
     });
 
     test('TC_CHECKOUT_003 - Validate empty last name', async ({ page }) => {
+        await allure.story('Empty last name validation');
+        await allure.severity('normal');
+
         const checkoutPage = new CheckoutPage(page);
 
         await checkoutPage.fillCustomerInformation('leo', '', '12345');
@@ -47,9 +60,12 @@ test.describe('Checkout Module', () => {
     });
 
     test('TC_CHECKOUT_004 - Validate empty postal code', async ({ page }) => {
+        await allure.story('Empty postal code validation');
+        await allure.severity('normal');
+
         const checkoutPage = new CheckoutPage(page);
 
-        await checkoutPage.fillCustomerInformation('leo', 'dicap', '');
+        await checkoutPage.fillCustomerInformation('leo', 'joe', '');
         await checkoutPage.continueCheckout();
 
         await expect(checkoutPage.errorMessage).toBeVisible();
@@ -57,9 +73,12 @@ test.describe('Checkout Module', () => {
     });
 
     test('TC_CHECKOUT_005 - Complete checkout successfully', async ({ page }) => {
+        await allure.story('Complete checkout successfully');
+        await allure.severity('critical');
+
         const checkoutPage = new CheckoutPage(page);
 
-        await checkoutPage.fillCustomerInformation('leo', 'dicap', '12345');
+        await checkoutPage.fillCustomerInformation('leo', 'joe', '12345');
         await checkoutPage.continueCheckout();
 
         await expect(page).toHaveURL(/checkout-step-two.html/);
@@ -73,6 +92,9 @@ test.describe('Checkout Module', () => {
     });
 
     test('TC_CHECKOUT_006 - Cancel checkout and return to cart', async ({ page }) => {
+        await allure.story('Cancel checkout and return to cart');
+        await allure.severity('normal');
+
         const checkoutPage = new CheckoutPage(page);
         const cartPage = new CartPage(page);
 
@@ -83,9 +105,12 @@ test.describe('Checkout Module', () => {
     });
 
     test('TC_CHECKOUT_007 - Verify order total calculation', async ({ page }) => {
+        await allure.story('Verify order total calculation');
+        await allure.severity('critical');
+
         const checkoutPage = new CheckoutPage(page);
 
-        await checkoutPage.fillCustomerInformation('leo', 'dicap', '12345');
+        await checkoutPage.fillCustomerInformation('leo', 'joe', '12345');
         await checkoutPage.continueCheckout();
 
         await expect(page).toHaveURL(/checkout-step-two.html/);
@@ -103,9 +128,12 @@ test.describe('Checkout Module', () => {
     });
 
     test('TC_CHECKOUT_008 - Verify product price in order summary', async ({ page }) => {
+        await allure.story('Verify product price in order summary');
+        await allure.severity('normal');
+
         const checkoutPage = new CheckoutPage(page);
 
-        await checkoutPage.fillCustomerInformation('leo', 'dicap', '12345');
+        await checkoutPage.fillCustomerInformation('leo', 'joe', '12345');
         await checkoutPage.continueCheckout();
 
         await expect(page).toHaveURL(/checkout-step-two.html/);
