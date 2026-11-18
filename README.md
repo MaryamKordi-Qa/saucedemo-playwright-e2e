@@ -1,6 +1,8 @@
 # SauceDemo - Playwright E2E Automation
 
-An End-to-End test automation project for [SauceDemo](https://www.saucedemo.com/) using **Playwright** and **TypeScript**. This project demonstrates UI automation, Page Object Model (POM), reusable fixtures, cross-browser testing, and test reporting with Allure.
+An End-to-End test automation project for [SauceDemo](https://www.saucedemo.com/) using **Playwright** and **TypeScript**.
+
+This project demonstrates practical UI automation skills, Page Object Model (POM), reusable fixtures, cross-browser testing, test data management, and automated test reporting with Allure.
 
 ## Tech Stack
 
@@ -12,6 +14,8 @@ An End-to-End test automation project for [SauceDemo](https://www.saucedemo.com/
 - **Browsers:** Chromium, Firefox, WebKit
 - **Version Control:** Git & GitHub
 - **CI/CD:** GitHub Actions
+- **Runtime:** Node.js
+- **Package Manager:** npm
 
 ## Test Coverage
 
@@ -24,6 +28,10 @@ The project currently contains **30 test scenarios** across four modules.
 | Cart | 4 |
 | Checkout | 8 |
 | **Total** | **30** |
+
+The test suite is configured to run across three browsers: Chromium, Firefox, and WebKit.
+
+A complete cross-browser execution runs **90 test executions** (30 scenarios × 3 browsers).
 
 ### Covered Scenarios
 
@@ -47,7 +55,7 @@ The project currently contains **30 test scenarios** across four modules.
 - Proceed to checkout
 
 **Checkout**
-- Checkout information validation
+- Checkout information page validation
 - Required field validation
 - Successful order completion
 - Cancel checkout
@@ -81,6 +89,12 @@ saucedemo-qa/
 │   ├── cart.spec.ts
 │   └── checkout.spec.ts
 │
+├── screenshots/
+│   ├── github-repository.png
+│   ├── github-actions-success.png
+│   ├── allure-overview.png
+│   └── allure-features.png
+│
 ├── .gitignore
 ├── .gitattributes
 ├── package.json
@@ -91,25 +105,31 @@ saucedemo-qa/
 
 ## Installation
 
-Clone the repository:
+### Prerequisites
+
+- Node.js
+- npm
+- Git
+
+### Clone the repository
 
 ```bash
 git clone https://github.com/MaryamKordi-Qa/saucedemo-playwright-e2e.git
 ```
 
-Navigate to the project directory:
+### Navigate to the project directory
 
 ```bash
 cd saucedemo-qa
 ```
 
-Install dependencies:
+### Install dependencies
 
 ```bash
 npm ci
 ```
 
-Install Playwright browsers:
+### Install Playwright browsers
 
 ```bash
 npx playwright install
@@ -117,27 +137,36 @@ npx playwright install
 
 ## Running Tests
 
-Run all tests:
+### Run all tests
 
 ```bash
-npx playwright test
+npm test
 ```
 
-Run tests in a specific browser:
+### Run tests in a specific browser
 
+**Chromium**
 ```bash
-npx playwright test --project=chromium
-npx playwright test --project=firefox
-npx playwright test --project=webkit
+npm run test:chromium
 ```
 
-Run a specific test file:
+**Firefox**
+```bash
+npm run test:firefox
+```
+
+**WebKit**
+```bash
+npm run test:webkit
+```
+
+### Run a specific test file
 
 ```bash
 npx playwright test tests/login.spec.ts
 ```
 
-Run tests in headed mode:
+### Run tests in headed mode
 
 ```bash
 npx playwright test --headed
@@ -147,10 +176,10 @@ npx playwright test --headed
 
 ### Playwright HTML Report
 
-After test execution:
+After test execution, open the HTML report using:
 
 ```bash
-npx playwright show-report
+npm run report
 ```
 
 ### Allure Report
@@ -176,34 +205,48 @@ Allure reports include test categorization using:
 
 ## CI/CD
 
-GitHub Actions is configured to execute Playwright tests automatically on pushes and pull requests targeting the `main` and `master` branches.
+GitHub Actions is configured to automatically execute the Playwright test suite on every push and pull request targeting the `main` and `master` branches.
 
-The workflow installs dependencies, installs Playwright browsers, and runs the test suite.
+The workflow performs the following steps:
+
+- Checks out the repository.
+- Sets up Node.js and Java.
+- Installs project dependencies.
+- Installs Playwright browsers.
+- Executes the automated test suite.
+- Generates Allure test reports.
+- Uploads Playwright HTML and Allure reports as workflow artifacts.
+
+This setup enables automated cross-browser test execution and provides accessible test reports for reviewing execution results.
 
 ## Key Automation Concepts
 
 - Page Object Model (POM)
 - Reusable custom fixtures
 - Cross-browser testing
-- Data-driven test design
+- Test data management
 - UI assertions and validations
 - Test categorization and reporting
 - Automated CI execution
 
-## Project Goal
-
-The goal of this project is to demonstrate practical skills in QA Automation using Playwright and TypeScript, with a focus on maintainable test architecture, reusable components, reliable test execution, and clear reporting.
-
 ## Project Screenshots
 
 ### GitHub Repository
+
 ![GitHub Repository](screenshots/github-repository.png)
 
 ### GitHub Actions - Successful Execution
+
 ![GitHub Actions Success](screenshots/github-actions-success.png)
 
 ### Allure Report - Overview
+
 ![Allure Overview](screenshots/allure-overview.png)
 
 ### Allure Report - Features
+
 ![Allure Features](screenshots/allure-features.png)
+
+## Project Goal
+
+The goal of this project is to demonstrate practical skills in QA Automation using Playwright and TypeScript, with a focus on maintainable test architecture, reusable components, reliable test execution, cross-browser testing, and clear test reporting.
