@@ -193,3 +193,17 @@ The workflow installs dependencies, installs Playwright browsers, and runs the t
 ## Project Goal
 
 The goal of this project is to demonstrate practical skills in QA Automation using Playwright and TypeScript, with a focus on maintainable test architecture, reusable components, reliable test execution, and clear reporting.
+
+## Project Screenshots
+
+### GitHub Repository
+![GitHub Repository](screenshots/github-repository.png)
+
+### GitHub Actions - Successful Execution
+![GitHub Actions Success](screenshots/github-actions-success.png)
+
+### Allure Report - Overview
+![Allure Overview](screenshots/allure-overview.png)
+
+### Allure Report - Features
+![Allure Features](screenshots/allure-features.png)
