@@ -4,6 +4,10 @@ import { CheckoutPage } from '../pages/CheckoutPage';
 import { CartPage } from '../pages/CartPage';
 import { allure } from 'allure-playwright';
 
+function parsePrice(priceText: string): number {
+    return Number(priceText.replace(/[^\d.-]/g, ''));
+}
+
 test.describe('Checkout Module', () => {
     let cartProductPrice: string;
 
@@ -13,11 +17,13 @@ test.describe('Checkout Module', () => {
 
         const cartPage = new CartPage(page);
 
+        // Add a product and capture its price
         await inventoryPage.addProductToCart('Sauce Labs Backpack');
         await cartPage.goToCart();
 
         cartProductPrice = await cartPage.productPrices.first().innerText();
 
+        // Proceed to checkout
         await cartPage.checkout();
     });
 
@@ -27,6 +33,7 @@ test.describe('Checkout Module', () => {
 
         const checkoutPage = new CheckoutPage(page);
 
+        // Verify checkout information fields
         await expect(page).toHaveURL(/checkout-step-one.html/);
         await expect(checkoutPage.firstNameInput).toBeVisible();
         await expect(checkoutPage.lastNameInput).toBeVisible();
@@ -39,9 +46,11 @@ test.describe('Checkout Module', () => {
 
         const checkoutPage = new CheckoutPage(page);
 
+        // Submit checkout form without first name
         await checkoutPage.fillCustomerInformation('', 'joe', '12345');
         await checkoutPage.continueCheckout();
 
+        // Verify first name validation error
         await expect(checkoutPage.errorMessage).toBeVisible();
         await expect(checkoutPage.errorMessage).toContainText('First Name is required');
     });
@@ -52,9 +61,11 @@ test.describe('Checkout Module', () => {
 
         const checkoutPage = new CheckoutPage(page);
 
+        // Submit checkout form without last name
         await checkoutPage.fillCustomerInformation('leo', '', '12345');
         await checkoutPage.continueCheckout();
 
+        // Verify last name validation error
         await expect(checkoutPage.errorMessage).toBeVisible();
         await expect(checkoutPage.errorMessage).toContainText('Last Name is required');
     });
@@ -65,9 +76,11 @@ test.describe('Checkout Module', () => {
 
         const checkoutPage = new CheckoutPage(page);
 
+        // Submit checkout form without postal code
         await checkoutPage.fillCustomerInformation('leo', 'joe', '');
         await checkoutPage.continueCheckout();
 
+        // Verify postal code validation error
         await expect(checkoutPage.errorMessage).toBeVisible();
         await expect(checkoutPage.errorMessage).toContainText('Postal Code is required');
     });
@@ -78,15 +91,19 @@ test.describe('Checkout Module', () => {
 
         const checkoutPage = new CheckoutPage(page);
 
+        // Submit valid customer information
         await checkoutPage.fillCustomerInformation('leo', 'joe', '12345');
         await checkoutPage.continueCheckout();
 
+        // Verify order summary
         await expect(page).toHaveURL(/checkout-step-two.html/);
         await expect(checkoutPage.summaryItems).toHaveCount(1);
         await expect(checkoutPage.summaryItems).toContainText('Sauce Labs Backpack');
 
+        // Complete the order
         await checkoutPage.finishCheckout();
 
+        // Verify successful checkout
         await expect(page).toHaveURL(/checkout-complete.html/);
         await expect(checkoutPage.completeHeader).toHaveText('Thank you for your order!');
     });
@@ -98,8 +115,10 @@ test.describe('Checkout Module', () => {
         const checkoutPage = new CheckoutPage(page);
         const cartPage = new CartPage(page);
 
+        // Cancel checkout
         await checkoutPage.cancelCheckout();
 
+        // Verify return to cart with the product preserved
         await expect(page).toHaveURL(/cart.html/);
         await expect(cartPage.productNames).toContainText('Sauce Labs Backpack');
     });
@@ -110,20 +129,27 @@ test.describe('Checkout Module', () => {
 
         const checkoutPage = new CheckoutPage(page);
 
+        // Submit valid customer information
         await checkoutPage.fillCustomerInformation('leo', 'joe', '12345');
         await checkoutPage.continueCheckout();
 
+        // Verify order summary page
         await expect(page).toHaveURL(/checkout-step-two.html/);
 
+        // Capture order amounts
         const itemTotalText = await checkoutPage.itemTotal.innerText();
         const taxText = await checkoutPage.tax.innerText();
         const totalText = await checkoutPage.total.innerText();
 
-        const itemTotal = Number(itemTotalText.replace('Item total: $', ''));
-        const tax = Number(taxText.replace('Tax: $', ''));
-        const total = Number(totalText.replace('Total: $', ''));
+        const expectedItemTotal = parsePrice(cartProductPrice);
+        const itemTotal = parsePrice(itemTotalText);
+        const tax = parsePrice(taxText);
+        const total = parsePrice(totalText);
 
-        expect(itemTotal).toBe(29.99);
+        // Verify item subtotal against the actual cart product price
+        expect(itemTotal).toBe(expectedItemTotal);
+
+        // Verify total equals subtotal plus tax
         expect(total).toBeCloseTo(itemTotal + tax, 2);
     });
 
@@ -133,11 +159,12 @@ test.describe('Checkout Module', () => {
 
         const checkoutPage = new CheckoutPage(page);
 
+        // Submit valid customer information
         await checkoutPage.fillCustomerInformation('leo', 'joe', '12345');
         await checkoutPage.continueCheckout();
 
+        // Verify product price in order summary
         await expect(page).toHaveURL(/checkout-step-two.html/);
-
         await expect(
             checkoutPage.summaryItems.locator('.inventory_item_price')
         ).toHaveText(cartProductPrice);
