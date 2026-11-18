@@ -10,6 +10,8 @@ export class InventoryPage {
     readonly productPrices: Locator;
     readonly sortDropDown: Locator;
     readonly cartBadge: Locator;
+    readonly menuButton: Locator;
+    readonly logoutLink: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -18,6 +20,8 @@ export class InventoryPage {
         this.productPrices = page.locator('.inventory_item_price');
         this.sortDropDown = page.locator('[data-test="product-sort-container"]');
         this.cartBadge = page.locator('.shopping_cart_badge');
+        this.menuButton = page.locator('#react-burger-menu-btn');
+        this.logoutLink = page.locator('#logout_sidebar_link');
     }
 
     async sortProducts(option: SortOption) {
@@ -42,5 +46,10 @@ export class InventoryPage {
         });
 
         await product.getByRole('button', { name: 'Remove' }).click();
+    }
+
+    async logout() {
+        await this.menuButton.click();
+        await this.logoutLink.click();
     }
 }
